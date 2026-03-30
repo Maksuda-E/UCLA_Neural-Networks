@@ -76,7 +76,6 @@ st.markdown('<div class="subtitle">Enter applicant details to estimate admission
 
 # Create a styled container (card)
 with st.container():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
 
     # Create two columns for better layout
     col1, col2 = st.columns(2)
