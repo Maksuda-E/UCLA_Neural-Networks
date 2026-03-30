@@ -1,0 +1,28 @@
+2026-03-26 14:33:06,042 INFO __main__ Main pipeline started
+2026-03-26 14:33:06,042 INFO src.data_loader Starting data loading from file
+2026-03-26 14:33:06,054 INFO src.data_loader Data loaded successfully
+2026-03-26 14:33:06,054 INFO src.preprocess Starting data cleaning
+2026-03-26 14:33:06,070 INFO src.preprocess Data cleaning completed successfully
+2026-03-26 14:33:06,070 INFO src.preprocess Splitting features and target
+2026-03-26 14:33:06,070 INFO src.preprocess Feature and target split completed successfully
+2026-03-26 14:33:06,070 INFO src.preprocess Starting train test split
+2026-03-26 14:33:06,078 INFO src.preprocess Train test split completed successfully
+2026-03-26 14:33:06,078 INFO src.train Feature scaling started
+2026-03-26 14:33:06,080 INFO src.train Feature scaling completed successfully
+2026-03-26 14:33:06,080 INFO src.train Neural network model training started
+2026-03-26 14:33:06,298 INFO src.train Neural network model training completed successfully
+2026-03-26 14:33:06,298 INFO src.train Model evaluation started
+2026-03-26 14:33:06,302 INFO src.train Model evaluation completed successfully
+2026-03-26 14:33:06,302 INFO src.train Artifacts saved successfully
+2026-03-26 14:33:06,307 INFO __main__ Main pipeline completed successfully
+2026-03-26 14:33:27,462 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:34:25,788 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:34:36,866 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:34:44,633 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:34:52,522 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:34:56,102 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:35:02,674 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:35:07,205 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:35:14,298 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:35:21,499 INFO src.predict Model, scaler, and feature columns loaded successfully
+2026-03-26 14:35:25,774 INFO src.predict Model, scaler, and feature columns loaded successfully

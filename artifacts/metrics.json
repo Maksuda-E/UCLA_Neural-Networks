@@ -1,0 +1,14 @@
+{
+    "train_accuracy": 0.8975,
+    "test_accuracy": 0.85,
+    "confusion_matrix": [
+        [
+            61,
+            8
+        ],
+        [
+            7,
+            24
+        ]
+    ]
+}
