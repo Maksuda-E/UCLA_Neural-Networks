@@ -7,6 +7,7 @@ from src.predict import predict_admission
 # Set page configuration (title, icon, layout)
 st.set_page_config(
     page_title="Graduate Admission Predictor",
+    page_icon="🎓",
     layout="centered"
 )
 
