@@ -88,13 +88,28 @@ The model classifies students into:
 
 It also provides the probability of high admission.
 
----
+
 
 ## How to Run
 
-### Install dependencies
-```bash
+# Install dependencies
 pip install -r requirements.txt
+
+
+# Run training pipeline
+python main.py
+
+# Run Streamlit app
+streamlit run app.py
+
+
+# Key Features
+Modular code structure
+Logging and exception handling
+Neural Network model implementation
+Proper preprocessing pipeline
+Model evaluation with classification metrics
+Interactive Streamlit web application
 
 
 UCLA_Neural-Networks/
