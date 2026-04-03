@@ -10,6 +10,14 @@ st.set_page_config(page_title="UCLA Admission Predictor", layout="wide")
 #  stores custom CSS styling for the page, cards, and result boxes.
 custom_css = """
 <style>
+    /* REMOVE HEADER */
+        header {visibility: hidden;}
+
+        /* REMOVE TOP SPACE */
+        .block-container {
+            padding-top: 1rem !important;
+        }
+
     .main-title {
         font-size: 2.2rem;
         font-weight: 700;
