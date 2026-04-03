@@ -26,6 +26,20 @@ custom_css = """
         font-weight: 600;
         color: #1f3c88;
     }
+    div.stButton > button {
+    background-color: #1f77b4;
+    color: white;
+    border-radius: 10px;
+    height: 45px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+   }
+
+   div.stButton > button:hover {
+    background-color: #155a8a;
+    color: white;
+   }
 </style>
 """
 
