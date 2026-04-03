@@ -1,213 +1,53 @@
-# Import streamlit for building the web application
-import streamlit as st
+# Import the dataset path from the configuration file.
+from src.config import DATA_FILE_PATH
 
-# Import the prediction function
-from src.predict import predict_admission
+# Import the function that loads the dataset.
+from src.data_loader import load_data
 
-# Import required libraries for loading saved metrics
-import json
-import os
+# Import preprocessing functions for cleaning and splitting the data.
+from src.preprocess import clean_data, split_features_target, split_train_test
 
-# Configure the page settings such as title, icon, and layout
-st.set_page_config(
-    page_title="Graduate Admission Prediction",
-    layout="wide"
-)
+# Import training functions for scaling, training, evaluation, and saving artifacts.
+from src.train import scale_data, train_model, evaluate_model, save_artifacts
 
-# Apply custom CSS styling for better UI appearance
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background: linear-gradient(135deg, #eef2ff, #f8fafc, #ecfeff);
-    }
 
-    .title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        text-align: center;
-        color: #0f172a;
-    }
+# Define the full training pipeline function.
+def run_training_pipeline() -> dict:
+    # Load the dataset from the configured file path.
+    data_frame = load_data(DATA_FILE_PATH)
 
-    .subtitle {
-        text-align: center;
-        color: #475569;
-        margin-bottom: 25px;
-    }
+    # Clean and preprocess the raw dataset.
+    cleaned_data = clean_data(data_frame)
 
-    div.stButton > button {
-        width: 100%;
-        height: 45px;
-        border-radius: 10px;
-        border: none;
-        background: linear-gradient(90deg, #2563eb, #7c3aed);
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-    }
+    # Separate the features and target variable.
+    features, target = split_features_target(cleaned_data)
 
-    div.stButton > button:hover {
-        background: linear-gradient(90deg, #1d4ed8, #6d28d9);
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+    # Split the data into training and testing sets.
+    x_train, x_test, y_train, y_test = split_train_test(features, target)
 
-# Display the main title of the application
-st.markdown('<div class="title">Graduate Admission Prediction</div>', unsafe_allow_html=True)
+    # Scale the training and testing feature data.
+    x_train_scaled, x_test_scaled, scaler = scale_data(x_train, x_test)
 
-# Display subtitle text below the title
-st.markdown(
-    '<div class="subtitle">Enter applicant details to estimate admission probability</div>',
-    unsafe_allow_html=True
-)
+    # Train the neural network model using the scaled training data.
+    model = train_model(x_train_scaled, y_train)
 
-# Create two columns where left is wider for inputs and right is for summary
-left_col, right_col = st.columns([2, 1])
+    # Evaluate the trained model using both train and test data.
+    metrics = evaluate_model(model, x_train_scaled, y_train, x_test_scaled, y_test)
 
-# Left column contains all user input fields and prediction result
-with left_col:
+    # Save the trained model, scaler, feature names, and metrics.
+    save_artifacts(model, scaler, list(features.columns), metrics)
 
-    # Create two inner columns for organizing input fields
-    col1, col2 = st.columns(2)
+    # Return the evaluation results.
+    return metrics
 
-    # First column inputs
-    with col1:
-        # Input for GRE score
-        gre_score = st.number_input(
-            "GRE Score",
-            min_value=260,
-            max_value=340,
-            value=320
-        )
 
-        # Dropdown for university rating
-        university_rating = st.selectbox(
-            "University Rating",
-            [1, 2, 3, 4, 5]
-        )
+# Check whether this file is being run directly.
+if __name__ == "__main__":
+    # Run the full training pipeline and store the results.
+    results = run_training_pipeline()
 
-        # Slider for LOR strength
-        lor = st.slider(
-            "LOR Strength",
-            min_value=1.0,
-            max_value=5.0,
-            value=4.0
-        )
+    # Print a success message after the training pipeline completes.
+    print("Training pipeline completed successfully.")
 
-        # Dropdown for research experience
-        research = st.selectbox(
-            "Research Experience",
-            [0, 1],
-            format_func=lambda x: "Yes" if x == 1 else "No"
-        )
-
-    # Second column inputs
-    with col2:
-        # Input for TOEFL score
-        toefl_score = st.number_input(
-            "TOEFL Score",
-            min_value=0,
-            max_value=120,
-            value=110
-        )
-
-        # Slider for SOP strength
-        sop = st.slider(
-            "SOP Strength",
-            min_value=1.0,
-            max_value=5.0,
-            value=4.0
-        )
-
-        # Input for CGPA
-        cgpa = st.number_input(
-            "CGPA",
-            min_value=0.0,
-            max_value=10.0,
-            value=8.5
-        )
-
-    # Add spacing before button
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # Create a button for prediction
-    predict_button = st.button("Predict Admission Chance")
-
-    # Check if the button is clicked
-    if predict_button:
-
-        # Prepare input data dictionary for model
-        user_input = {
-            "GRE_Score": gre_score,
-            "TOEFL_Score": toefl_score,
-            "University_Rating": university_rating,
-            "SOP": sop,
-            "LOR": lor,
-            "CGPA": cgpa,
-            "Research": research
-        }
-
-        # Try to get prediction from model
-        try:
-            result = predict_admission(user_input)
-
-            # Try converting result to numeric for percentage display
-            try:
-                value = float(result)
-
-                # Convert probability to percentage if needed
-                if value <= 1:
-                    value = value * 100
-
-                # Display result as success message
-                st.success(f"Admission Chance: {value:.2f}%")
-
-                # Show progress bar based on prediction value
-                st.progress(int(value))
-
-            # If result is not numeric, display raw result
-            except:
-                st.success(f"Result: {result}")
-
-        # Handle prediction errors
-        except Exception as e:
-            st.error(f"Prediction failed: {e}")
-
-# Right column displays model summary and metrics
-with right_col:
-
-    # Display summary title
-    st.markdown("### Model Summary")
-
-    # Try loading saved model metrics
-    try:
-        metrics_path = "artifacts/metrics.json"
-
-        # Check if metrics file exists
-        if os.path.exists(metrics_path):
-
-            # Load metrics from JSON file
-            with open(metrics_path, "r") as f:
-                metrics = json.load(f)
-
-            # Display metrics heading
-            st.markdown("#### Evaluation Metrics")
-
-            # Loop through metrics and display each one
-            for key, value in metrics.items():
-                st.metric(label=key, value=round(value, 4))
-
-        # If file not found, show message
-        else:
-            st.info("Run training pipeline first to generate metrics")
-
-    # Handle errors in loading metrics
-    except Exception as e:
-        st.error(f"Error loading summary: {e}")
-
-    # Display additional model information
-    st.markdown("#### Model Info")
-    st.write("Model: Linear Regression")
-    st.write("Scaler: StandardScaler")
+    # Print the evaluation results to the console.
+    print(results)

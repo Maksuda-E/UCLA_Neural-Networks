@@ -1,35 +1,35 @@
-# This line imports pandas for reading the dataset
+# Import pandas for reading the CSV dataset.
 import pandas as pd
 
-# This line imports the logger function
+# Import the custom logger helper.
 from src.logger import get_logger
 
-# This line imports the custom project exception
+# Import the custom project exception class.
 from src.custom_exception import ProjectException
 
-# This line creates a logger for this file
+# Create a logger for this module.
 logger = get_logger(__name__)
 
-# This function loads the CSV dataset
+# Define a function to load the dataset from a CSV file.
 def load_data(file_path: str) -> pd.DataFrame:
-    # This line starts a try block for safe execution
+    # Start a try block to catch loading errors.
     try:
-        # This line logs that data loading has started
-        logger.info("Starting data loading from file")
+        # Write a log message before loading the dataset.
+        logger.info("Loading dataset from %s", file_path)
 
-        # This line reads the CSV file into a pandas DataFrame
-        df = pd.read_csv(file_path)
+        # Read the dataset from the given file path.
+        data_frame = pd.read_csv(file_path)
 
-        # This line logs that data loading finished successfully
-        logger.info("Data loaded successfully")
+        # Write a log message after successful loading.
+        logger.info("Dataset loaded successfully with shape %s", data_frame.shape)
 
-        # This line returns the loaded DataFrame
-        return df
+        # Return the loaded DataFrame.
+        return data_frame
 
-    # This block handles any exception during file loading
+    # Catch any exception that happens during file loading.
     except Exception as exc:
-        # This line logs the error message
-        logger.error("Error occurred while loading data")
+        # Write an error message to the log file.
+        logger.error("Failed to load dataset")
 
-        # This line raises a custom project exception
+        # Raise a project-specific exception with the original error message.
         raise ProjectException(f"Failed to load data: {exc}")

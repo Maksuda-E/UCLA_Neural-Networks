@@ -1,22 +1,22 @@
-# This line imports os for folder creation
+# Import os for file and folder operations.
 import os
 
-# This line imports json for saving metrics
+# Import json for saving metrics in JSON format.
 import json
 
-# This line imports pickle for saving model objects
+# Import pickle for saving Python objects such as model and scaler.
 import pickle
 
-# This line imports accuracy_score and confusion_matrix for evaluation
-from sklearn.metrics import accuracy_score, confusion_matrix
+# Import evaluation metrics from sklearn.
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
-# This line imports MLPClassifier for neural network classification
+# Import the neural network classifier.
 from sklearn.neural_network import MLPClassifier
 
-# This line imports MinMaxScaler for feature scaling
+# Import the MinMaxScaler used in the notebook pipeline.
 from sklearn.preprocessing import MinMaxScaler
 
-# This line imports configuration values
+# Import configuration values and artifact paths.
 from src.config import (
     ARTIFACTS_DIR,
     MODEL_FILE_PATH,
@@ -26,157 +26,155 @@ from src.config import (
     RANDOM_STATE
 )
 
-# This line imports the logger
+# Import the logger helper.
 from src.logger import get_logger
 
-# This line imports the custom exception
+# Import the custom exception class.
 from src.custom_exception import ProjectException
 
-# This line creates a logger for this file
+# Create a logger for this module.
 logger = get_logger(__name__)
 
-# This function scales the training and testing data
+# Define a function to scale training and testing data.
 def scale_data(x_train, x_test):
-    # This line starts the try block
+    # Start a try block to catch scaling errors.
     try:
-        # This line logs scaling start
-        logger.info("Feature scaling started")
+        # Log that scaling has started.
+        logger.info("Starting feature scaling")
 
-        # This line creates the scaler
+        # Create a MinMaxScaler object.
         scaler = MinMaxScaler()
 
-        # This line fits the scaler on training data
+        # Fit the scaler on the training data only.
         scaler.fit(x_train)
 
-        # This line transforms the training data
+        # Transform the training data using the fitted scaler.
         x_train_scaled = scaler.transform(x_train)
 
-        # This line transforms the testing data
+        # Transform the testing data using the same scaler.
         x_test_scaled = scaler.transform(x_test)
 
-        # This line logs scaling completion
-        logger.info("Feature scaling completed successfully")
+        # Log that scaling has completed.
+        logger.info("Feature scaling completed")
 
-        # This line returns scaled data and scaler
+        # Return the scaled train data, scaled test data, and scaler object.
         return x_train_scaled, x_test_scaled, scaler
 
-    # This block handles scaling errors
+    # Catch any exception during scaling.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred during feature scaling")
+        # Log the scaling failure.
+        logger.error("Feature scaling failed")
 
-        # This line raises a custom exception
+        # Raise a custom exception with details.
         raise ProjectException(f"Failed to scale data: {exc}")
 
-# This function trains the neural network model
+# Define a function to train the neural network model.
 def train_model(x_train, y_train):
-    # This line starts the try block
+    # Start a try block to catch training errors.
     try:
-        # This line logs the start of model training
-        logger.info("Neural network model training started")
+        # Log that model training has started.
+        logger.info("Starting model training")
 
-        # This line creates the MLP classifier like the notebook
+        # Create the MLPClassifier using the notebook configuration.
         model = MLPClassifier(
-            hidden_layer_sizes=3,
-            batch_size=50,
-            max_iter=200,
-            random_state=RANDOM_STATE
-        )
+             hidden_layer_sizes=(10,),   # Increase neurons
+             batch_size=50,
+             max_iter=500,               # Increase iterations
+             random_state=RANDOM_STATE,
+             early_stopping=True         # Stops automatically when no improvement
+       )
 
-        # This line trains the model on the training data
+        # Fit the model on the training data.
         model.fit(x_train, y_train)
 
-        # This line logs that training completed successfully
-        logger.info("Neural network model training completed successfully")
+        # Log that model training has completed.
+        logger.info("Model training completed")
 
-        # This line returns the trained model
+        # Return the trained model.
         return model
 
-    # This block handles training errors
+    # Catch any exception during training.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred during model training")
+        # Log the training failure.
+        logger.error("Model training failed")
 
-        # This line raises a custom exception
+        # Raise a custom exception with details.
         raise ProjectException(f"Failed to train neural network model: {exc}")
 
-# This function evaluates the trained model
+# Define a function to evaluate the trained model.
 def evaluate_model(model, x_train, y_train, x_test, y_test):
-    # This line starts the try block
+    # Start a try block to catch evaluation errors.
     try:
-        # This line logs evaluation start
-        logger.info("Model evaluation started")
+        # Log that evaluation has started.
+        logger.info("Starting model evaluation")
 
-        # This line makes predictions on training data
-        ypred_train = model.predict(x_train)
+        # Predict the labels for the training data.
+        y_train_pred = model.predict(x_train)
 
-        # This line makes predictions on testing data
-        ypred_test = model.predict(x_test)
+        # Predict the labels for the testing data.
+        y_test_pred = model.predict(x_test)
 
-        # This line calculates training accuracy
-        train_accuracy = accuracy_score(y_train, ypred_train)
-
-        # This line calculates testing accuracy
-        test_accuracy = accuracy_score(y_test, ypred_test)
-
-        # This line calculates confusion matrix on test data
-        cm = confusion_matrix(y_test, ypred_test)
-
-        # This line creates a metrics dictionary
+        # Create a dictionary of evaluation metrics.
         metrics = {
-            "train_accuracy": float(train_accuracy),
-            "test_accuracy": float(test_accuracy),
-            "confusion_matrix": cm.tolist()
+            "train_accuracy": float(accuracy_score(y_train, y_train_pred)),
+            "test_accuracy": float(accuracy_score(y_test, y_test_pred)),
+            "precision": float(precision_score(y_test, y_test_pred)),
+            "recall": float(recall_score(y_test, y_test_pred)),
+            "f1_score": float(f1_score(y_test, y_test_pred)),
+            "confusion_matrix": confusion_matrix(y_test, y_test_pred).tolist()
         }
 
-        # This line logs evaluation completion
-        logger.info("Model evaluation completed successfully")
+        # Log the evaluation metrics.
+        logger.info("Evaluation completed with metrics %s", metrics)
 
-        # This line returns the metrics
+        # Return the metrics dictionary.
         return metrics
 
-    # This block handles evaluation errors
+    # Catch any exception during evaluation.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred during model evaluation")
+        # Log the evaluation failure.
+        logger.error("Model evaluation failed")
 
-        # This line raises a custom exception
+        # Raise a custom exception with details.
         raise ProjectException(f"Failed to evaluate model: {exc}")
 
-# This function saves the model artifacts
+# Define a function to save the trained model, scaler, columns, and metrics.
 def save_artifacts(model, scaler, feature_columns, metrics):
-    # This line starts the try block
+    # Start a try block to handle file save errors.
     try:
-        # This line creates the artifacts folder if it does not exist
+        # Log that artifact saving has started.
+        logger.info("Saving artifacts")
+
+        # Create the artifacts directory if it does not already exist.
         os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 
-        # This line opens the model file in write binary mode
+        # Open the model file path in binary write mode.
         with open(MODEL_FILE_PATH, "wb") as model_file:
-            # This line saves the model
+            # Save the trained model object.
             pickle.dump(model, model_file)
 
-        # This line opens the scaler file in write binary mode
+        # Open the scaler file path in binary write mode.
         with open(SCALER_FILE_PATH, "wb") as scaler_file:
-            # This line saves the scaler
+            # Save the scaler object.
             pickle.dump(scaler, scaler_file)
 
-        # This line opens the feature columns file in write binary mode
+        # Open the feature columns file path in binary write mode.
         with open(FEATURE_COLUMNS_FILE_PATH, "wb") as feature_file:
-            # This line saves the feature columns
+            # Save the feature column names.
             pickle.dump(feature_columns, feature_file)
 
-        # This line opens the metrics file in write mode
+        # Open the metrics file path in text write mode.
         with open(METRICS_FILE_PATH, "w", encoding="utf-8") as metrics_file:
-            # This line saves the metrics
+            # Save the metrics dictionary as formatted JSON.
             json.dump(metrics, metrics_file, indent=4)
 
-        # This line logs successful artifact saving
+        # Log that artifacts were saved successfully.
         logger.info("Artifacts saved successfully")
 
-    # This block handles saving errors
+    # Catch any exception during saving.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred while saving artifacts")
+        # Log the save failure.
+        logger.error("Artifact saving failed")
 
-        # This line raises a custom exception
+        # Raise a custom exception with details.
         raise ProjectException(f"Failed to save artifacts: {exc}")

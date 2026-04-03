@@ -1,104 +1,99 @@
-# This line imports pandas for data processing
+# Import pandas for DataFrame operations.
 import pandas as pd
 
-# This line imports train_test_split for splitting the dataset
+# Import train_test_split from sklearn for splitting the dataset.
 from sklearn.model_selection import train_test_split
 
-# This line imports configuration values
-from src.config import TEST_SIZE, RANDOM_STATE
+# Import configuration values used during preprocessing.
+from src.config import TEST_SIZE, RANDOM_STATE, THRESHOLD
 
-# This line imports the logger
+# Import the logger helper.
 from src.logger import get_logger
 
-# This line imports the custom exception
+# Import the custom exception class.
 from src.custom_exception import ProjectException
 
-# This line creates a logger for this file
+# Create a logger for this module.
 logger = get_logger(__name__)
 
-# This function cleans the dataset
-def clean_data(df: pd.DataFrame) -> pd.DataFrame:
-    # This line starts the try block
+# Define a function to clean and preprocess the raw dataset.
+def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
+    # Start a try block to handle preprocessing errors.
     try:
-        # This line logs the start of data cleaning
+        # Log the start of the cleaning process.
         logger.info("Starting data cleaning")
 
-        # This line creates a copy of the dataset
-        df = df.copy()
+        # Create a copy of the input DataFrame so the original data is unchanged.
+        df = data_frame.copy()
 
-        # This line removes leading and trailing spaces from column names
+        # Remove extra spaces from column names.
         df.columns = df.columns.str.strip()
 
-        # This line removes duplicate rows
+        # Remove duplicate rows from the dataset.
         df = df.drop_duplicates()
 
-        # This line converts the target variable into binary form like the notebook
-        df["Admit_Chance"] = (df["Admit_Chance"] >= 0.8).astype(int)
+        # Convert the target column into binary classes using the threshold value.
+        df["Admit_Chance"] = (df["Admit_Chance"] >= THRESHOLD).astype(int)
 
-        # This line drops the serial number column if it exists
+        # Drop the serial number column if it exists in the dataset.
         if "Serial_No" in df.columns:
-            df = df.drop(["Serial_No"], axis=1)
+            df = df.drop(columns=["Serial_No"])
 
-        # This line converts University_Rating to object type if it exists
-        if "University_Rating" in df.columns:
-            df["University_Rating"] = df["University_Rating"].astype("object")
+        # Convert University_Rating into categorical type.
+        df["University_Rating"] = df["University_Rating"].astype("object")
 
-        # This line converts Research to object type if it exists
-        if "Research" in df.columns:
-            df["Research"] = df["Research"].astype("object")
+        # Convert Research into categorical type.
+        df["Research"] = df["Research"].astype("object")
 
-        # This line creates dummy variables for categorical columns like the notebook
+        # Apply one hot encoding to categorical columns.
         df = pd.get_dummies(df, columns=["University_Rating", "Research"], dtype=int)
 
-        # This line logs that data cleaning is complete
-        logger.info("Data cleaning completed successfully")
+        # Log the completion of data cleaning.
+        logger.info("Data cleaning completed with shape %s", df.shape)
 
-        # This line returns the cleaned dataset
+        # Return the cleaned DataFrame.
         return df
 
-    # This block handles errors during cleaning
+    # Catch any exception that happens during cleaning.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred during data cleaning")
+        # Log the preprocessing failure.
+        logger.error("Data cleaning failed")
 
-        # This line raises a custom exception
+        # Raise a project-specific exception with details.
         raise ProjectException(f"Failed to clean data: {exc}")
 
-# This function separates features and target
-def split_features_target(df: pd.DataFrame):
-    # This line starts the try block
+# Define a function to separate features and target.
+def split_features_target(data_frame: pd.DataFrame):
+    # Start a try block for error handling.
     try:
-        # This line logs the start of feature and target split
+        # Log the beginning of feature target splitting.
         logger.info("Splitting features and target")
 
-        # This line stores all columns except Admit_Chance in x
-        x = df.drop(["Admit_Chance"], axis=1)
+        # Drop the target column from the feature set.
+        x = data_frame.drop(columns=["Admit_Chance"])
 
-        # This line stores the Admit_Chance column in y
-        y = df["Admit_Chance"]
+        # Store the target column separately.
+        y = data_frame["Admit_Chance"]
 
-        # This line logs successful split
-        logger.info("Feature and target split completed successfully")
-
-        # This line returns x and y
+        # Return the feature matrix and target vector.
         return x, y
 
-    # This block handles split errors
+    # Catch any exception during feature target split.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred while splitting features and target")
+        # Log the failure.
+        logger.error("Feature target split failed")
 
-        # This line raises a custom exception
+        # Raise a custom exception with the original error.
         raise ProjectException(f"Failed to split features and target: {exc}")
 
-# This function splits the data into training and testing sets
+# Define a function to split the data into train and test sets.
 def split_train_test(x, y):
-    # This line starts the try block
+    # Start a try block for safe execution.
     try:
-        # This line logs the start of train test split
-        logger.info("Starting train test split")
+        # Log that train test split is starting.
+        logger.info("Creating train test split")
 
-        # This line splits x and y into training and test sets
+        # Split the data while keeping class balance using stratify.
         x_train, x_test, y_train, y_test = train_test_split(
             x,
             y,
@@ -107,16 +102,13 @@ def split_train_test(x, y):
             stratify=y
         )
 
-        # This line logs that splitting is complete
-        logger.info("Train test split completed successfully")
-
-        # This line returns the split data
+        # Return the split datasets.
         return x_train, x_test, y_train, y_test
 
-    # This block handles splitting errors
+    # Catch any exception during train test split.
     except Exception as exc:
-        # This line logs the error
-        logger.error("Error occurred during train test split")
+        # Log the failure.
+        logger.error("Train test split failed")
 
-        # This line raises a custom exception
+        # Raise a custom exception with full details.
         raise ProjectException(f"Failed to split train and test data: {exc}")

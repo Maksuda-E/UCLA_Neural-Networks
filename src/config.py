@@ -1,44 +1,47 @@
-# This line imports the os module so we can work with folder paths
+# Import the os module to work with file and folder paths.
 import os
 
-# This line gets the absolute path of the current file
+# Get the absolute path of the current file.
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 
-# This line gets the src folder path
+# Get the src folder path from the current file path.
 SRC_DIR = os.path.dirname(CURRENT_FILE_PATH)
 
-# This line gets the main project folder path
+# Get the main project directory from the src folder path.
 PROJECT_DIR = os.path.dirname(SRC_DIR)
 
-# This line creates the full path for the data folder
+# Define the data folder path.
 DATA_DIR = os.path.join(PROJECT_DIR, "data")
 
-# This line creates the full path for the artifacts folder
+# Define the artifacts folder path where model files will be stored.
 ARTIFACTS_DIR = os.path.join(PROJECT_DIR, "artifacts")
 
-# This line creates the full path for the logs folder
+# Define the logs folder path where log files will be stored.
 LOGS_DIR = os.path.join(PROJECT_DIR, "logs")
 
-# This line creates the full path for the dataset file
+# Define the dataset file path.
 DATA_FILE_PATH = os.path.join(DATA_DIR, "Admission.csv")
 
-# This line creates the full path for the saved model file
+# Define the trained model file path.
 MODEL_FILE_PATH = os.path.join(ARTIFACTS_DIR, "neural_network_model.pkl")
 
-# This line creates the full path for the saved scaler file
+# Define the scaler file path.
 SCALER_FILE_PATH = os.path.join(ARTIFACTS_DIR, "scaler.pkl")
 
-# This line creates the full path for the saved feature columns file
+# Define the feature columns file path.
 FEATURE_COLUMNS_FILE_PATH = os.path.join(ARTIFACTS_DIR, "feature_columns.pkl")
 
-# This line creates the full path for the saved metrics file
+# Define the metrics file path.
 METRICS_FILE_PATH = os.path.join(ARTIFACTS_DIR, "metrics.json")
 
-# This line creates the full path for the log file
+# Define the application log file path.
 LOG_FILE_PATH = os.path.join(LOGS_DIR, "project.log")
 
-# This line sets the random state for reproducibility
+# Set the random state so results are reproducible.
 RANDOM_STATE = 123
 
-# This line sets the test size for train and test split
+# Set the test size for train test split.
 TEST_SIZE = 0.20
+
+# Set the target threshold for converting admission chance into binary classes.
+THRESHOLD = 0.80

@@ -1,15 +1,27 @@
-# Graduate Admission Neural Network Project
+# UCLA Neural Networks Admission Predictor
 
-This project predicts whether an applicant has a high chance of admission or a low chance of admission using a neural network model.
+This project predicts whether a student has a high or low chance of admission to UCLA using a neural network classification model.
 
-## Files
-main.py is used for training and evaluation.
+## Project Objective
 
-app.py is used for the Streamlit deployment.
+The original notebook uses `Admit_Chance` as the target variable.
 
-src folder contains modular Python files for data loading, preprocessing, training, and prediction.
+For classification, the target is converted into binary classes:
 
-## How to run
+- 1 means high chance of admission when `Admit_Chance >= 0.80`
+- 0 means low chance of admission when `Admit_Chance < 0.80`
+
+## Project Structure
+
+- `app.py` contains the Streamlit web application
+- `main.py` runs the training pipeline
+- `src/data_loader.py` loads the dataset
+- `src/preprocess.py` cleans and prepares the data
+- `src/train.py` trains and evaluates the model
+- `src/predict.py` loads saved artifacts and predicts new inputs
+
+## How to Run the Project
+
 Install dependencies:
 
 ```bash
