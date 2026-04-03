@@ -21,13 +21,6 @@ custom_css = """
         color: #4a4a4a;
         margin-bottom: 1.5rem;
     }
-    .result-box {
-        background-color: #eef6ff;
-        padding: 1rem;
-        border-radius: 12px;
-        border: 1px solid #b9d7ff;
-        margin-top: 1rem;
-    }
     .metric-title {
         font-size: 1rem;
         font-weight: 600;
@@ -145,9 +138,6 @@ if predict_clicked:
 
         #  converts the probability into percentage format for display.
         probability_percent = positive_probability * 100
-
-        #  opens a styled container to display the result.
-        st.markdown('<div class="result-box">', unsafe_allow_html=True)
 
         #  shows a heading for the prediction result section.
         st.subheader("Prediction Result")
