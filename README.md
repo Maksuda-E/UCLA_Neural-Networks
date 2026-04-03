@@ -112,32 +112,33 @@ Model evaluation with classification metrics
 Interactive Streamlit web application
 
 ## Project Structure
-```text
+
 UCLA_Neural-Networks/
 │
-├── app.py
-├── main.py
-├── requirements.txt
-├── README.md
-│
-├── data/
-│   └── Admission.csv
-│
-├── artifacts/
-│   ├── neural_network_model.pkl
-│   ├── scaler.pkl
-│   ├── feature_columns.pkl
-│   └── metrics.json
-│
-├── logs/
-│   └── project.log
-│
-└── src/
-    ├── __init__.py
-    ├── config.py
-    ├── custom_exception.py
-    ├── logger.py
-    ├── data_loader.py
-    ├── preprocess.py
-    ├── train.py
-    └── predict.py
+├── app.py  
+├── main.py  
+├── requirements.txt  
+├── README.md  
+│  
+├── data/  
+│   └── Admission.csv  
+│  
+├── artifacts/  
+│   ├── neural_network_model.pkl  
+│   ├── scaler.pkl  
+│   ├── feature_columns.pkl  
+│   └── metrics.json  
+│  
+├── logs/  
+│   └── project.log  
+│  
+└── src/  
+    ├── __init__.py  
+    ├── config.py  
+    ├── custom_exception.py  
+    ├── data_loader.py  
+    ├── evaluate.py  
+    ├── logger.py  
+    ├── preprocess.py  
+    ├── train.py  
+    └── predict.py  
