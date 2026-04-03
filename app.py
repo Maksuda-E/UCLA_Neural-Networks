@@ -21,13 +21,6 @@ custom_css = """
         color: #4a4a4a;
         margin-bottom: 1.5rem;
     }
-    .section-card {
-        background-color: #f7f9fc;
-        padding: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid #dbe4f0;
-        margin-bottom: 1rem;
-    }
     .result-box {
         background-color: #eef6ff;
         padding: 1rem;
@@ -60,9 +53,6 @@ left_col, right_col = st.columns([2, 1])
 
 # This block starts the left column where all user inputs will be placed.
 with left_col:
-
-    #  opens a styled container for the applicant input section.
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
     #  shows a heading for the applicant profile section.
     st.subheader("Applicant Profile")
@@ -108,9 +98,6 @@ with left_col:
 
 # This block starts the right column where explanation and output will be shown.
 with right_col:
-
-    #  opens a styled container for project information.
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
     #  displays a heading for model information.
     st.subheader("Model Information")
