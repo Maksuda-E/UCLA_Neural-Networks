@@ -112,7 +112,7 @@ Model evaluation with classification metrics
 Interactive Streamlit web application
 
 
-UCLA_Neural-Networks/
+# UCLA_Neural-Networks/
 │
 ├── app.py
 ├── main.py
