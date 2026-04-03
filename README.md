@@ -111,8 +111,9 @@ Proper preprocessing pipeline
 Model evaluation with classification metrics
 Interactive Streamlit web application
 
-
-# UCLA_Neural-Networks/
+## Project Structure
+```text
+UCLA_Neural-Networks/
 │
 ├── app.py
 ├── main.py
